@@ -31,6 +31,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    compileOnly("com.github.prominence:openweathermap-api:2.4.0")
 }
 
 tasks.withType<Test> {

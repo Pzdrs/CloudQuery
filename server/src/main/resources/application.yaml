@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: CloudQuery
+
+openweathermap:
+  apikey: ${OPENWEATHERMAP_APIKEY}
