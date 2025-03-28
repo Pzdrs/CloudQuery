@@ -1,10 +1,7 @@
 package cz.pycrs.cloudquery;
 
-import cz.pycrs.cloudquery.repository.OWMResponseRepository;
-import io.github.mbenincasa.javaopenweathermapclient.client.DefaultOpenWeatherMapClient;
-import io.github.mbenincasa.javaopenweathermapclient.client.OpenWeatherMapClient;
-import io.github.mbenincasa.javaopenweathermapclient.request.common.Lang;
-import io.github.mbenincasa.javaopenweathermapclient.request.common.Unit;
+import cz.pycrs.cloudquery.entity.Country;
+import cz.pycrs.cloudquery.repository.CountryRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,9 +15,9 @@ public class CloudQueryApplication {
     }
 
     @Bean
-    public CommandLineRunner run(OpenWeatherMapClient openWeatherMapClient, OWMResponseRepository responseRepository) {
+    CommandLineRunner init(CountryRepository countryRepository) {
         return args -> {
-            System.out.println(openWeatherMapClient.oneCallApi().overview(50.0, 50.0).response());
+          countryRepository.save(new Country("CZ", "Czech Republic"));
         };
     }
 }
