@@ -1,6 +1,7 @@
 package cz.pycrs.cloudquery.configuration;
 
-import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
+import io.github.mbenincasa.javaopenweathermapclient.client.DefaultOpenWeatherMapClient;
+import io.github.mbenincasa.javaopenweathermapclient.client.OpenWeatherMapClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +13,6 @@ public class OpenWeatherMap {
 
     @Bean
     public OpenWeatherMapClient openWeatherMapClient() {
-        return new OpenWeatherMapClient(apiKey);
+        return new DefaultOpenWeatherMapClient(apiKey);
     }
 }

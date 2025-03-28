@@ -1,6 +1,10 @@
 package cz.pycrs.cloudquery;
 
-import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
+import cz.pycrs.cloudquery.repository.OWMResponseRepository;
+import io.github.mbenincasa.javaopenweathermapclient.client.DefaultOpenWeatherMapClient;
+import io.github.mbenincasa.javaopenweathermapclient.client.OpenWeatherMapClient;
+import io.github.mbenincasa.javaopenweathermapclient.request.common.Lang;
+import io.github.mbenincasa.javaopenweathermapclient.request.common.Unit;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,9 +18,9 @@ public class CloudQueryApplication {
     }
 
     @Bean
-    public CommandLineRunner run(OpenWeatherMapClient client) {
+    public CommandLineRunner run(OpenWeatherMapClient openWeatherMapClient, OWMResponseRepository responseRepository) {
         return args -> {
-            System.out.println(client.currentWeather().single().byCityName("Liberec").retrieve().asJSON());
+            System.out.println(openWeatherMapClient.oneCallApi().overview(50.0, 50.0).response());
         };
     }
 }

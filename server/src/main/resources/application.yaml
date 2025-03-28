@@ -1,6 +1,16 @@
 spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
   application:
     name: CloudQuery
+  data:
+    mongodb:
+      database: cloud_query
+      authentication-database: admin
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT:27017}
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
 
 openweathermap:
   apikey: ${OPENWEATHERMAP_APIKEY}
