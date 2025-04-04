@@ -27,6 +27,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation ("org.liquibase:liquibase-core:4.30.0")
     implementation("org.postgresql:postgresql")
     implementation("com.github.prominence:openweathermap-api:2.4.0")
     compileOnly("org.projectlombok:lombok")
