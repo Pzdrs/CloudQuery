@@ -8,12 +8,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/weather")
 @RequiredArgsConstructor
 public class WeatherController {
     private final OpenWeatherMapClient owmClient;
+    private final WeatherService weatherService;
 
     @GetMapping("/current")
     public String currentWeather(
@@ -28,5 +30,13 @@ public class WeatherController {
         } else {
             throw new IllegalArgumentException("Either city or latitude and longitude must be provided.");
         }
+    }
+
+    @PostMapping("/gen-sample")
+    public String generateSampleData(
+            @RequestParam int n
+    ) {
+        weatherService.generateSampleData(n);
+        return "ok";
     }
 }
