@@ -18,7 +18,3 @@ spring:
 
 openweathermap:
   apikey: ${OPENWEATHERMAP_APIKEY}
-
-logging:
-  level:
-    com.github.prominence: DEBUG
