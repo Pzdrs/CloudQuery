@@ -3,6 +3,7 @@ package cz.pycrs.cloudquery.controller;
 import cz.pycrs.cloudquery.entity.Place;
 import cz.pycrs.cloudquery.service.WeatherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,7 +18,8 @@ public class PlaceController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deletePlace(@PathVariable int id) {
+    public ResponseEntity<?> deletePlace(@PathVariable int id) {
         weatherService.deletePlace(id);
+        return ResponseEntity.noContent().build();
     }
 }

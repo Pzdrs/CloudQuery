@@ -3,15 +3,17 @@ package cz.pycrs.cloudquery.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.ZoneOffset;
 
 
 @Entity
 @Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Place {
-    protected Place() {}
 
     @Id
     private int id;

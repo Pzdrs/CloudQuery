@@ -2,7 +2,10 @@ package cz.pycrs.cloudquery.entity;
 
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -10,9 +13,8 @@ import java.time.Instant;
 
 @Entity
 @Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Measurement {
-    protected Measurement() {
-    }
 
     @Id
     @GeneratedValue

@@ -9,10 +9,13 @@ import cz.pycrs.cloudquery.entity.Place;
 import cz.pycrs.cloudquery.repository.MeasurementRepository;
 import cz.pycrs.cloudquery.repository.PlaceRepository;
 import cz.pycrs.cloudquery.service.WeatherService;
+import jakarta.validation.constraints.NotNull;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -23,9 +26,28 @@ public class WeatherServiceImpl implements WeatherService {
     private final MeasurementRepository measurementRepository;
     private final PlaceRepository placeRepository;
 
+
     @Override
-    public void generateSampleData(int n) {
+    public void generateSampleData(int n, int placeId) {
         log.info("Generating {} sample weather data records.", n);
+
+        var place = placeRepository.findById(placeId)
+                .orElseThrow(() -> new IllegalArgumentException("Place with ID " + placeId + " not found."));
+
+        for (int i = 0; i < n; i++) {
+            var measurement = new Measurement(
+                    place,
+                    Instant.now(),
+                    20.0f + (float) (Math.random() * 10), // Random temperature between 20 and 30
+                    20.0f + (float) (Math.random() * 10), // Random feels like temperature
+                    20.0f + (float) (Math.random() * 10), // Random min temperature
+                    30.0f + (float) (Math.random() * 10), // Random max temperature
+                    1000.0f + (float) (Math.random() * 50), // Random sea level pressure
+                    1000.0f + (float) (Math.random() * 50), // Random ground level pressure
+                    50.0f + (float) (Math.random() * 50) // Random humidity
+            );
+            measurementRepository.save(measurement);
+        }
     }
 
     @Override

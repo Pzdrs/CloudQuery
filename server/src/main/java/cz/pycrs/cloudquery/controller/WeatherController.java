@@ -31,9 +31,10 @@ public class WeatherController {
 
     @PostMapping("/gen-sample")
     public String generateSampleData(
-            @RequestParam int n
+            @RequestParam("amount") int n,
+            @RequestParam(value = "place_id") int placeId
     ) {
-        weatherService.generateSampleData(n);
+        weatherService.generateSampleData(n, placeId);
         return "ok";
     }
 }

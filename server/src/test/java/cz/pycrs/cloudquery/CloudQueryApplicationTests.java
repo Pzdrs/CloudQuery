@@ -8,6 +8,7 @@ class CloudQueryApplicationTests {
 
     @Test
     void contextLoads() {
+        // Sanity check
     }
 
 }

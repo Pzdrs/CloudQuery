@@ -7,11 +7,12 @@ import cz.pycrs.cloudquery.entity.Place;
 import java.util.List;
 
 public interface WeatherService {
-    void generateSampleData(int n);
+    void generateSampleData(int n, int placeId);
 
     List<Place> getPlaces();
 
     Measurement getCurrentByCity(String city);
+
     Measurement getCurrentByCoordinates(Coordinate coordinate);
 
     void deletePlace(int id);
