@@ -45,6 +45,12 @@ public class WeatherServiceImpl implements WeatherService {
         return createMeasurement(owmClient.currentWeather().single().byCoordinate(coordinate));
     }
 
+    @Override
+    public void deletePlace(int id) {
+        log.info("Deleting place with ID: {}", id);
+        placeRepository.deleteById(id);
+    }
+
     private Measurement createMeasurement(SingleResultCurrentWeatherRequestCustomizer customizer) {
         var response = customizer
                 .unitSystem(UnitSystem.METRIC)

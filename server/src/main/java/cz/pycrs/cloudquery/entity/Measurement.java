@@ -3,6 +3,8 @@ package cz.pycrs.cloudquery.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
@@ -17,6 +19,7 @@ public class Measurement {
     private int id;
 
     @ManyToOne
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Place place;
 
     private Instant timestamp;

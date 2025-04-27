@@ -13,4 +13,6 @@ public interface WeatherService {
 
     Measurement getCurrentByCity(String city);
     Measurement getCurrentByCoordinates(Coordinate coordinate);
+
+    void deletePlace(int id);
 }

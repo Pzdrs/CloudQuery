@@ -13,9 +13,21 @@ spring:
     url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT:5432}/${POSTGRES_DB}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
-  liquibase:
-    enabled: false
-  # change-log: classpath:/db/changelog/db.changelog-master.xml
 
 openweathermap:
   apikey: ${OPENWEATHERMAP_APIKEY}
+---
+# Profile: dev
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+# During development, Hibernate takes care of migration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  liquibase:
+    enabled: false
+  # change-log: classpath:/db/changelog/db.changelog-master.xml
