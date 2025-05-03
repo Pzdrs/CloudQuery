@@ -5,8 +5,10 @@ import com.github.prominence.openweathermap.api.enums.UnitSystem;
 import com.github.prominence.openweathermap.api.model.Coordinate;
 import com.github.prominence.openweathermap.api.request.weather.single.SingleResultCurrentWeatherRequestCustomizer;
 import cz.pycrs.cloudquery.entity.Measurement;
+import cz.pycrs.cloudquery.entity.OWMResponse;
 import cz.pycrs.cloudquery.entity.Place;
 import cz.pycrs.cloudquery.repository.MeasurementRepository;
+import cz.pycrs.cloudquery.repository.OWMResponseRepository;
 import cz.pycrs.cloudquery.repository.PlaceRepository;
 import cz.pycrs.cloudquery.service.WeatherService;
 import jakarta.validation.constraints.NotNull;
@@ -25,6 +27,7 @@ public class WeatherServiceImpl implements WeatherService {
     private final OpenWeatherMapClient owmClient;
     private final MeasurementRepository measurementRepository;
     private final PlaceRepository placeRepository;
+    private final OWMResponseRepository owmResponseRepository;
 
 
     @Override
@@ -44,7 +47,8 @@ public class WeatherServiceImpl implements WeatherService {
                     30.0f + (float) (Math.random() * 10), // Random max temperature
                     1000.0f + (float) (Math.random() * 50), // Random sea level pressure
                     1000.0f + (float) (Math.random() * 50), // Random ground level pressure
-                    50.0f + (float) (Math.random() * 50) // Random humidity
+                    50.0f + (float) (Math.random() * 50), // Random humidity
+                    0.0f // Random rain intensity
             );
             measurementRepository.save(measurement);
         }
@@ -79,6 +83,8 @@ public class WeatherServiceImpl implements WeatherService {
                 .retrieve()
                 .asJava();
 
+        owmResponseRepository.save(new OWMResponse(response));
+
         var loc = response.getLocation();
         var place = placeRepository.findById(loc.getId()).orElseGet(() -> {
             log.info("{} ({}) not found in DB, creating new entry.", loc.getName(), loc.getId());
@@ -95,10 +101,11 @@ public class WeatherServiceImpl implements WeatherService {
 
         var temp = response.getTemperature();
         var pressure = response.getAtmosphericPressure();
+
         return measurementRepository.save(new Measurement(
                 place, response.getCalculationTime().toInstant(place.getZoneOffset()),
                 temp.getValue(), temp.getFeelsLike(), temp.getMinTemperature(), temp.getMaxTemperature(),
-                pressure.getSeaLevelValue(), pressure.getGroundLevelValue(), response.getHumidity().getValue()
+                pressure.getSeaLevelValue(), pressure.getGroundLevelValue(), response.getHumidity().getValue(), response.getRain().getOneHourLevel()
         ));
     }
 }

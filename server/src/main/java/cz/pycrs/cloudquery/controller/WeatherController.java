@@ -3,9 +3,13 @@ package cz.pycrs.cloudquery.controller;
 import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
 import com.github.prominence.openweathermap.api.model.Coordinate;
 import cz.pycrs.cloudquery.entity.Measurement;
+import cz.pycrs.cloudquery.entity.Place;
 import cz.pycrs.cloudquery.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @RestController
 @RequestMapping("/weather")
@@ -28,6 +32,8 @@ public class WeatherController {
             throw new IllegalArgumentException("Either city or latitude and longitude must be provided.");
         }
     }
+
+
 
     @PostMapping("/gen-sample")
     public String generateSampleData(

@@ -30,12 +30,13 @@ public class Measurement {
     private double minTemperature, maxTemperature;
     private double pressureSeaLevel, pressureGroundLevel;
     private double humidity;
+    private double rainIntensity;
 
     public Measurement(
             Place place, Instant timestamp,
             double temperature, double feelsLike, double minTemperature, double maxTemperature,
             double pressureSeaLevel, double pressureGroundLevel,
-            double humidity
+            double humidity, double rainIntensity
     ) {
         this.place = place;
         this.timestamp = timestamp;
@@ -46,5 +47,6 @@ public class Measurement {
         this.pressureSeaLevel = pressureSeaLevel;
         this.pressureGroundLevel = pressureGroundLevel;
         this.humidity = humidity;
+        this.rainIntensity = rainIntensity;
     }
 }
