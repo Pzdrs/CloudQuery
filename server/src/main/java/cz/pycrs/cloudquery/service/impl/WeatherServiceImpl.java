@@ -11,14 +11,11 @@ import cz.pycrs.cloudquery.repository.MeasurementRepository;
 import cz.pycrs.cloudquery.repository.OWMResponseRepository;
 import cz.pycrs.cloudquery.repository.PlaceRepository;
 import cz.pycrs.cloudquery.service.WeatherService;
-import jakarta.validation.constraints.NotNull;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -54,28 +51,19 @@ public class WeatherServiceImpl implements WeatherService {
         }
     }
 
-    @Override
-    public List<Place> getPlaces() {
-        return placeRepository.findAll();
-    }
 
     @Override
-    public Measurement getCurrentByCity(String city) {
+    public Measurement getCurrentForCity(String city) {
         log.info("Fetching current weather for city: {}", city);
         return createMeasurement(owmClient.currentWeather().single().byCityName(city));
     }
 
     @Override
-    public Measurement getCurrentByCoordinates(Coordinate coordinate) {
+    public Measurement getCurrentForCoordinates(Coordinate coordinate) {
         log.info("Getting current weather data records for {}", coordinate);
         return createMeasurement(owmClient.currentWeather().single().byCoordinate(coordinate));
     }
 
-    @Override
-    public void deletePlace(int id) {
-        log.info("Deleting place with ID: {}", id);
-        placeRepository.deleteById(id);
-    }
 
     private Measurement createMeasurement(SingleResultCurrentWeatherRequestCustomizer customizer) {
         var response = customizer
