@@ -6,6 +6,7 @@ import cz.pycrs.cloudquery.entity.Measurement;
 import cz.pycrs.cloudquery.service.WeatherService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -54,13 +55,19 @@ public class WeatherController {
             parameters = {
                     @io.swagger.v3.oas.annotations.Parameter(name = "amount", description = "Počet vzorových dat"),
                     @io.swagger.v3.oas.annotations.Parameter(name = "place_id", description = "ID místa")
+            },
+            responses = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                            responseCode = "204",
+                            description = "Úspěšně vygenerováno **n** vzorových dat"
+                    )
             }
     )
-    public String generateSampleData(
+    public ResponseEntity<?> generateSampleData(
             @RequestParam("amount") int n,
             @RequestParam(value = "place_id") int placeId
     ) {
         weatherService.generateSampleData(n, placeId);
-        return "ok";
+        return ResponseEntity.status(204).build();
     }
 }

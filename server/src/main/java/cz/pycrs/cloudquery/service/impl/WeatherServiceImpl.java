@@ -2,7 +2,7 @@ package cz.pycrs.cloudquery.service.impl;
 
 import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
 import com.github.prominence.openweathermap.api.enums.UnitSystem;
-import com.github.prominence.openweathermap.api.model.Coordinate;
+import com.github.prominence.openweathermap.api.model.*;
 import com.github.prominence.openweathermap.api.model.weather.Weather;
 import com.github.prominence.openweathermap.api.request.weather.single.SingleResultCurrentWeatherRequestCustomizer;
 import cz.pycrs.cloudquery.entity.Measurement;
@@ -36,10 +36,26 @@ public class WeatherServiceImpl implements WeatherService {
                 .orElseThrow(() -> new IllegalArgumentException("Place with ID " + placeId + " not found."));
 
         for (int i = 0; i < n; i++) {
+            var weather = new Weather();
+            var temp = Temperature.withValue(23.5, "C");
+            var pressure = AtmosphericPressure.withValue(1000);
+
+            temp.setFeelsLike(20d);
+            temp.setMinTemperature(17d);
+            temp.setMaxTemperature(30d);
+            pressure.setGroundLevelValue(950);
+            pressure.setSeaLevelValue(1000);
+
+            weather.setTemperature(temp);
+            weather.setHumidity(Humidity.withValue((byte) 57));
+
+            weather.setWeatherState(new WeatherState(804, "Clouds", "overcast clouds"));
+            weather.setAtmosphericPressure(pressure);
+
             var measurement = new Measurement(
                     place,
                     Instant.now(),
-                    new Weather()
+                    weather
             );
             measurementRepository.save(measurement);
         }
