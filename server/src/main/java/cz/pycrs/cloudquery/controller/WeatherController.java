@@ -48,8 +48,6 @@ public class WeatherController {
         }
     }
 
-
-
     @PostMapping("/gen-sample")
     @Operation(
             summary = "Vygenerovat vzorová data pro dané místo",

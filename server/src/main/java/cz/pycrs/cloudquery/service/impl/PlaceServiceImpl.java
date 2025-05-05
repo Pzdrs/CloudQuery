@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 
 @Service
@@ -48,7 +49,7 @@ public class PlaceServiceImpl implements PlaceService {
             if (to == null) {
                 return measurementTime.toLocalDate().equals(from.toLocalDate());
             } else {
-                return !measurementTime.isBefore(from) && !measurementTime.isAfter(to);
+                return !measurementTime.toLocalDate().isBefore(ChronoLocalDate.from(from)) && !measurementTime.toLocalDate().isAfter(ChronoLocalDate.from(to));
             }
         }).map(Measurement::getPlace).distinct().toList();
     }
@@ -61,8 +62,6 @@ public class PlaceServiceImpl implements PlaceService {
                     var place = placeRepository.findById(diff.placeId()).orElseThrow();
                     return new PlaceTemperatureDifference(
                             place,
-                            diff.maxTemp(),
-                            diff.minTemp(),
                             diff.largestTempDiff()
                     );
                 }).limit(n == null ? Long.MAX_VALUE : n).toList();

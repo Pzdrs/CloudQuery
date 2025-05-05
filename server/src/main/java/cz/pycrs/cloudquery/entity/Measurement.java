@@ -1,6 +1,9 @@
 package cz.pycrs.cloudquery.entity;
 
 
+import com.github.prominence.openweathermap.api.enums.WeatherCondition;
+import com.github.prominence.openweathermap.api.model.Temperature;
+import com.github.prominence.openweathermap.api.model.weather.Weather;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,22 +34,26 @@ public class Measurement {
     private double pressureSeaLevel, pressureGroundLevel;
     private double humidity;
     private double rainIntensity;
+    private WeatherCondition weatherCondition;
 
     public Measurement(
             Place place, Instant timestamp,
-            double temperature, double feelsLike, double minTemperature, double maxTemperature,
-            double pressureSeaLevel, double pressureGroundLevel,
-            double humidity, double rainIntensity
+            Weather weather
     ) {
+        var temp =  weather.getTemperature();
+        var pressure = weather.getAtmosphericPressure();
+        var rain = weather.getRain();
+
         this.place = place;
         this.timestamp = timestamp;
-        this.temperature = temperature;
-        this.feelsLike = feelsLike;
-        this.minTemperature = minTemperature;
-        this.maxTemperature = maxTemperature;
-        this.pressureSeaLevel = pressureSeaLevel;
-        this.pressureGroundLevel = pressureGroundLevel;
-        this.humidity = humidity;
-        this.rainIntensity = rainIntensity;
+        this.temperature = temp.getValue();
+        this.feelsLike = temp.getFeelsLike();
+        this.minTemperature = temp.getMinTemperature();
+        this.maxTemperature = temp.getMaxTemperature();
+        this.pressureSeaLevel = pressure.getSeaLevelValue();
+        this.pressureGroundLevel = pressure.getGroundLevelValue();
+        this.humidity = weather.getHumidity().getValue();
+        this.rainIntensity = rain == null ? 0 : rain.getOneHourLevel();
+        this.weatherCondition = weather.getWeatherState().getWeatherConditionEnum();
     }
 }

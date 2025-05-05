@@ -11,17 +11,13 @@ import java.util.List;
 public interface PlaceRepository extends JpaRepository<Place, Integer> {
     record PlaceTemperatureDifference(
             Integer placeId,
-            Double maxTemp,
-            Double minTemp,
             Double largestTempDiff
     ){}
 
     @Query(value = """
                 SELECT
                     place_id AS placeId,
-                    MAX(temperature) AS maxTemp,
-                    MIN(temperature) AS minTemp,
-                    MAX(temperature) - MIN(temperature) AS largestTempDiff
+                    MAX(max_temperature - min_temperature) AS largestTempDiff
                 FROM measurement
                 WHERE timestamp::date = :date
                 GROUP BY place_id

@@ -3,6 +3,7 @@ package cz.pycrs.cloudquery.service.impl;
 import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
 import com.github.prominence.openweathermap.api.enums.UnitSystem;
 import com.github.prominence.openweathermap.api.model.Coordinate;
+import com.github.prominence.openweathermap.api.model.weather.Weather;
 import com.github.prominence.openweathermap.api.request.weather.single.SingleResultCurrentWeatherRequestCustomizer;
 import cz.pycrs.cloudquery.entity.Measurement;
 import cz.pycrs.cloudquery.entity.OWMResponse;
@@ -38,14 +39,7 @@ public class WeatherServiceImpl implements WeatherService {
             var measurement = new Measurement(
                     place,
                     Instant.now(),
-                    20.0f + (float) (Math.random() * 10), // Random temperature between 20 and 30
-                    20.0f + (float) (Math.random() * 10), // Random feels like temperature
-                    20.0f + (float) (Math.random() * 10), // Random min temperature
-                    30.0f + (float) (Math.random() * 10), // Random max temperature
-                    1000.0f + (float) (Math.random() * 50), // Random sea level pressure
-                    1000.0f + (float) (Math.random() * 50), // Random ground level pressure
-                    50.0f + (float) (Math.random() * 50), // Random humidity
-                    0.0f // Random rain intensity
+                    new Weather()
             );
             measurementRepository.save(measurement);
         }
@@ -87,13 +81,8 @@ public class WeatherServiceImpl implements WeatherService {
             return placeRepository.save(newPlace);
         });
 
-        var temp = response.getTemperature();
-        var pressure = response.getAtmosphericPressure();
-
         return measurementRepository.save(new Measurement(
-                place, response.getCalculationTime().toInstant(place.getZoneOffset()),
-                temp.getValue(), temp.getFeelsLike(), temp.getMinTemperature(), temp.getMaxTemperature(),
-                pressure.getSeaLevelValue(), pressure.getGroundLevelValue(), response.getHumidity().getValue(), response.getRain().getOneHourLevel()
+                place, response.getCalculationTime().toInstant(place.getZoneOffset()), response
         ));
     }
 }
