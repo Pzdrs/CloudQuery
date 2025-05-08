@@ -31,3 +31,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+
+openweathermap:
+  apikey: asdf
