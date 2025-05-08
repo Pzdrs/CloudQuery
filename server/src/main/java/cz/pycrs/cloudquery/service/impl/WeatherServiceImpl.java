@@ -94,7 +94,7 @@ public class WeatherServiceImpl implements WeatherService {
         );
 
         return measurementRepository.save(new Measurement(
-                place, response.getCalculationTime().toInstant(place.getZoneOffset()), response
-        ));
+                place, response.getCalculationTime().toInstant(place.getZoneOffset())
+        ).ofWeather(response));
     }
 }

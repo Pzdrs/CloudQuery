@@ -1,3 +1,4 @@
+# Profile: default
 spring:
   application:
     name: CloudQuery
@@ -20,3 +21,13 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+---
+# Profile: test
+spring:
+  config:
+    activate:
+      on-profile: test
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop

@@ -2,13 +2,9 @@ package cz.pycrs.cloudquery.entity;
 
 
 import com.github.prominence.openweathermap.api.model.weather.Weather;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -17,6 +13,7 @@ import java.time.Instant;
 @Entity
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@RequiredArgsConstructor
 public class Measurement {
 
     @Id
@@ -25,24 +22,31 @@ public class Measurement {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @NonNull
     private Place place;
 
+    @NonNull
     private Instant timestamp;
-    private double temperature;
-    private double feelsLike;
-    private double minTemperature, maxTemperature;
-    private double pressureSeaLevel, pressureGroundLevel;
-    private double humidity;
+    @NonNull
+    private Double temperature;
+    @NonNull
+    private Double feelsLike;
+    @NonNull
+    private Double minTemperature, maxTemperature;
+    @NonNull
+    private Double pressureSeaLevel, pressureGroundLevel;
+    @NonNull
+    private Integer humidity;
 
-    public Measurement(
-            Place place, Instant timestamp,
-            Weather weather
-    ) {
-        var temp =  weather.getTemperature();
-        var pressure = weather.getAtmosphericPressure();
-
+    public Measurement(@NonNull Place place, @NonNull Instant timestamp) {
         this.place = place;
         this.timestamp = timestamp;
+    }
+
+    public Measurement ofWeather(Weather weather) {
+        var temp = weather.getTemperature();
+        var pressure = weather.getAtmosphericPressure();
+
         this.temperature = temp.getValue();
         this.feelsLike = temp.getFeelsLike();
         this.minTemperature = temp.getMinTemperature();
@@ -50,5 +54,7 @@ public class Measurement {
         this.pressureSeaLevel = pressure.getSeaLevelValue();
         this.pressureGroundLevel = pressure.getGroundLevelValue();
         this.humidity = weather.getHumidity().getValue();
+
+        return this;
     }
 }

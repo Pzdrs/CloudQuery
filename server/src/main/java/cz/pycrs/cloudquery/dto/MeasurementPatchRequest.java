@@ -11,6 +11,6 @@ public record MeasurementPatchRequest(
         Double maxTemperature,
         Double pressureSeaLevel,
         Double pressureGroundLevel,
-        Double humidity
+        Integer humidity
 ) {
 }
