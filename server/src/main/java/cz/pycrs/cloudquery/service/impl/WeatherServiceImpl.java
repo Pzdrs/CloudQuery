@@ -6,10 +6,8 @@ import com.github.prominence.openweathermap.api.model.*;
 import com.github.prominence.openweathermap.api.model.weather.Weather;
 import com.github.prominence.openweathermap.api.request.weather.single.SingleResultCurrentWeatherRequestCustomizer;
 import cz.pycrs.cloudquery.entity.Measurement;
-import cz.pycrs.cloudquery.entity.OWMResponse;
 import cz.pycrs.cloudquery.entity.Place;
 import cz.pycrs.cloudquery.repository.MeasurementRepository;
-import cz.pycrs.cloudquery.repository.OWMResponseRepository;
 import cz.pycrs.cloudquery.repository.PlaceRepository;
 import cz.pycrs.cloudquery.service.WeatherService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -25,41 +24,6 @@ public class WeatherServiceImpl implements WeatherService {
     private final OpenWeatherMapClient owmClient;
     private final MeasurementRepository measurementRepository;
     private final PlaceRepository placeRepository;
-    private final OWMResponseRepository owmResponseRepository;
-
-
-    @Override
-    public void generateSampleData(int n, int placeId) {
-        log.info("Generating {} sample weather data records.", n);
-
-        var place = placeRepository.findById(placeId)
-                .orElseThrow(() -> new IllegalArgumentException("Place with ID " + placeId + " not found."));
-
-        for (int i = 0; i < n; i++) {
-            var weather = new Weather();
-            var temp = Temperature.withValue(23.5, "C");
-            var pressure = AtmosphericPressure.withValue(1000);
-
-            temp.setFeelsLike(20d);
-            temp.setMinTemperature(17d);
-            temp.setMaxTemperature(30d);
-            pressure.setGroundLevelValue(950);
-            pressure.setSeaLevelValue(1000);
-
-            weather.setTemperature(temp);
-            weather.setHumidity(Humidity.withValue((byte) 57));
-
-            weather.setWeatherState(new WeatherState(804, "Clouds", "overcast clouds"));
-            weather.setAtmosphericPressure(pressure);
-
-            var measurement = new Measurement(
-                    place,
-                    Instant.now(),
-                    weather
-            );
-            measurementRepository.save(measurement);
-        }
-    }
 
 
     @Override
@@ -74,14 +38,20 @@ public class WeatherServiceImpl implements WeatherService {
         return createMeasurement(owmClient.currentWeather().single().byCoordinate(coordinate));
     }
 
+    @Override
+    public List<Measurement> getAllForPlace(int id, Integer limit) {
+        var place = placeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Place with ID " + id + " not found"));
+        var measurements = measurementRepository.findAllByPlace(place);
+        if (limit != null) measurements = measurements.stream().limit(limit).toList();
+        return measurements;
+    }
+
 
     private Measurement createMeasurement(SingleResultCurrentWeatherRequestCustomizer customizer) {
         var response = customizer
                 .unitSystem(UnitSystem.METRIC)
                 .retrieve()
                 .asJava();
-
-        owmResponseRepository.save(new OWMResponse(response));
 
         var loc = response.getLocation();
         var place = placeRepository.findById(loc.getId()).orElseGet(() -> {
@@ -90,9 +60,7 @@ public class WeatherServiceImpl implements WeatherService {
                     loc.getId(),
                     loc.getName(),
                     loc.getCountryCode(),
-                    loc.getZoneOffset(),
-                    loc.getCoordinate().getLatitude(),
-                    loc.getCoordinate().getLongitude()
+                    loc.getZoneOffset()
             );
             return placeRepository.save(newPlace);
         });

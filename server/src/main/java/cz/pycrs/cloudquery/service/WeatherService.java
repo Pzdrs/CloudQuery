@@ -3,16 +3,9 @@ package cz.pycrs.cloudquery.service;
 import com.github.prominence.openweathermap.api.model.Coordinate;
 import cz.pycrs.cloudquery.entity.Measurement;
 
+import java.util.List;
+
 public interface WeatherService {
-
-    /**
-     * Generate sample data for the given place ID
-     *
-     * @param n       number of measurements to generate
-     * @param placeId ID of the place to generate data for
-     */
-    void generateSampleData(int n, int placeId);
-
     /**
      * Get the current weather for the given place ID
      *
@@ -29,4 +22,11 @@ public interface WeatherService {
      */
     Measurement getCurrentForCoordinates(Coordinate coordinate);
 
+    /**
+     * Get the current weather for the given place ID
+     *
+     * @param id place ID to get the weather for
+     * @return current weather for the given place ID
+     */
+    List<Measurement> getAllForPlace(int id, Integer limit);
 }

@@ -20,14 +20,11 @@ public class Place {
     private String cityName;
     private String countryCode;
     private ZoneOffset zoneOffset;
-    private double latitude, longitude;
 
-    public Place(int id, String name, String countryCode, ZoneOffset zoneOffset, double latitude, double longitude) {
+    public Place(int id, String name, String countryCode, ZoneOffset zoneOffset) {
         this.id = id;
         this.cityName = name;
         this.countryCode = countryCode;
         this.zoneOffset = zoneOffset;
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
 }

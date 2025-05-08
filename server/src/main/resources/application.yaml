@@ -1,14 +1,6 @@
 spring:
   application:
     name: CloudQuery
-  data:
-    mongodb:
-      database: ${MONGO_DB}
-      authentication-database: admin
-      host: ${MONGO_HOST}
-      port: ${MONGO_PORT:27017}
-      username: ${MONGO_USERNAME}
-      password: ${MONGO_PASSWORD}
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT:5432}/${POSTGRES_DB}
     username: ${POSTGRES_USER}
@@ -28,6 +20,3 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-  liquibase:
-    enabled: false
-  # change-log: classpath:/db/changelog/db.changelog-master.xml

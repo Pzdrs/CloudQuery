@@ -6,8 +6,9 @@ import cz.pycrs.cloudquery.entity.Measurement;
 import cz.pycrs.cloudquery.service.WeatherService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/weather")
@@ -16,7 +17,7 @@ public class WeatherController {
     private final OpenWeatherMapClient owmClient;
     private final WeatherService weatherService;
 
-    @GetMapping("/current")
+    @GetMapping("/fetch-current")
     @Operation(
             summary = "Získat aktuální počasí podle města nebo souřadnic",
             description = "Zadejte buď název města (`city`), nebo kombinaci `lat` a `lon`.",
@@ -35,7 +36,7 @@ public class WeatherController {
                     )
             }
     )
-    public Measurement currentWeather(
+    public Measurement fetchCurrentWeather(
             @RequestParam(required = false) String city,
             @RequestParam(required = false, name = "lat") Float latitude,
             @RequestParam(required = false, name = "lon") Float longitude
@@ -49,25 +50,39 @@ public class WeatherController {
         }
     }
 
-    @PostMapping("/gen-sample")
+    @GetMapping
     @Operation(
-            summary = "Vygenerovat vzorová data pro dané místo",
+            summary = "Získat aktuální počasí místa podle ID",
             parameters = {
-                    @io.swagger.v3.oas.annotations.Parameter(name = "amount", description = "Počet vzorových dat"),
-                    @io.swagger.v3.oas.annotations.Parameter(name = "place_id", description = "ID místa")
-            },
-            responses = {
-                    @io.swagger.v3.oas.annotations.responses.ApiResponse(
-                            responseCode = "204",
-                            description = "Úspěšně vygenerováno **n** vzorových dat"
+                    @io.swagger.v3.oas.annotations.Parameter(
+                            name = "id",
+                            description = "ID místa."
                     )
             }
     )
-    public ResponseEntity<?> generateSampleData(
-            @RequestParam("amount") int n,
-            @RequestParam(value = "place_id") int placeId
+    public List<Measurement> currentWeather(
+            @RequestParam int id,
+            @RequestParam(required = false) Integer limit
     ) {
-        weatherService.generateSampleData(n, placeId);
-        return ResponseEntity.status(204).build();
+        return weatherService.getAllForPlace(id, limit);
     }
+
+    @GetMapping("/average")
+    @Operation(
+            summary = "Získat průměrné počasí místa za posledních n dní",
+            parameters = {
+                    @io.swagger.v3.oas.annotations.Parameter(
+                            name = "id",
+                            description = "ID místa."
+                    ),
+                    @io.swagger.v3.oas.annotations.Parameter(
+                            name = "days",
+                            description = "Počet dní pro průměr."
+                    )
+            }
+    )
+    public void averageWeather(
+            @RequestParam int id,
+            @RequestParam int days
+    ) {}
 }

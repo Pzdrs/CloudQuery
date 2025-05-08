@@ -2,8 +2,8 @@ package cz.pycrs.cloudquery.dto;
 
 import cz.pycrs.cloudquery.entity.Place;
 
-public record PlaceTemperatureDifference(
+public record AverageWeatherResponse(
         Place place,
-        double diff
+        int days
 ) {
 }
