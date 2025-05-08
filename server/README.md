@@ -5,6 +5,7 @@
 - Everything that should be configurable is done so via environment variables
 - The following Spring profiles are used:
   - `dev` - for local development (only enables Hibernate migrations)
+  - `test` - for running the tests (Hibernate create-drop migrations + OWM API key placeholder)
 
 ## Data model
 
@@ -37,6 +38,14 @@ erDiagram
 
 - In the code, lombok's `@Slf4j` is used to create the logger instances
 - [Logback](https://logback.qos.ch/) is then used for logging
+
+## Tests
+
+Persistent(repositories) and service layers are tested using JUnit 5 and Mockito and can be run using the Maven `test` target
+
+```shell
+mvn test
+```
 
 ### Logback configuration
 

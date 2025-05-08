@@ -32,5 +32,6 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
+# The placeholder needs to be resolved, doesn't matter if it is not valid
 openweathermap:
-  apikey: asdf
+  apikey: dummy
