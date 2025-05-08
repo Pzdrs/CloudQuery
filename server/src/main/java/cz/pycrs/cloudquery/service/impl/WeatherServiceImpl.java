@@ -2,28 +2,26 @@ package cz.pycrs.cloudquery.service.impl;
 
 import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
 import com.github.prominence.openweathermap.api.enums.UnitSystem;
-import com.github.prominence.openweathermap.api.model.*;
-import com.github.prominence.openweathermap.api.model.weather.Weather;
+import com.github.prominence.openweathermap.api.model.Coordinate;
 import com.github.prominence.openweathermap.api.request.weather.single.SingleResultCurrentWeatherRequestCustomizer;
+import cz.pycrs.cloudquery.dto.MeasurementPatchRequest;
 import cz.pycrs.cloudquery.entity.Measurement;
-import cz.pycrs.cloudquery.entity.Place;
 import cz.pycrs.cloudquery.repository.MeasurementRepository;
-import cz.pycrs.cloudquery.repository.PlaceRepository;
+import cz.pycrs.cloudquery.service.PlaceService;
 import cz.pycrs.cloudquery.service.WeatherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.time.Instant;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class WeatherServiceImpl implements WeatherService {
     private final OpenWeatherMapClient owmClient;
+    private final PlaceService placeService;
     private final MeasurementRepository measurementRepository;
-    private final PlaceRepository placeRepository;
 
 
     @Override
@@ -39,11 +37,42 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    public List<Measurement> getAllForPlace(int id, Integer limit) {
-        var place = placeRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Place with ID " + id + " not found"));
-        var measurements = measurementRepository.findAllByPlace(place);
-        if (limit != null) measurements = measurements.stream().limit(limit).toList();
-        return measurements;
+    public Page<Measurement> getAllForPlace(int id, Pageable pageable) {
+        return measurementRepository.findAllByPlace(placeService.getPlace(id), pageable);
+    }
+
+    @Override
+    public void deleteMeasurement(int id) {
+        log.info("Deleting measurement with ID: {}", id);
+        var measurement = getMeasurement(id);
+        measurementRepository.delete(measurement);
+    }
+
+    @Override
+    public Measurement getMeasurement(int id) {
+        return measurementRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Measurement with ID " + id + " not found"));
+    }
+
+    @Override
+    public Page<Measurement> getAllMeasurements(Pageable pageable) {
+        return measurementRepository.findAll(pageable);
+    }
+
+    @Override
+    public Measurement updateMeasurement(int id, MeasurementPatchRequest patch) {
+        var measurement = getMeasurement(id);
+
+        if (patch.placeId() != null) measurement.setPlace(placeService.getPlace(patch.placeId()));
+        if (patch.timestamp() != null) measurement.setTimestamp(patch.timestamp());
+        if (patch.temperature() != null) measurement.setTemperature(patch.temperature());
+        if (patch.feelsLike() != null) measurement.setFeelsLike(patch.feelsLike());
+        if (patch.minTemperature() != null) measurement.setMinTemperature(patch.minTemperature());
+        if (patch.maxTemperature() != null) measurement.setMaxTemperature(patch.maxTemperature());
+        if (patch.pressureGroundLevel() != null) measurement.setPressureGroundLevel(patch.pressureGroundLevel());
+        if (patch.pressureSeaLevel() != null) measurement.setPressureSeaLevel(patch.pressureSeaLevel());
+        if (patch.humidity() != null) measurement.setHumidity(patch.humidity());
+
+        return measurementRepository.save(measurement);
     }
 
 
@@ -54,16 +83,9 @@ public class WeatherServiceImpl implements WeatherService {
                 .asJava();
 
         var loc = response.getLocation();
-        var place = placeRepository.findById(loc.getId()).orElseGet(() -> {
-            log.info("{} ({}) not found in DB, creating new entry.", loc.getName(), loc.getId());
-            var newPlace = new Place(
-                    loc.getId(),
-                    loc.getName(),
-                    loc.getCountryCode(),
-                    loc.getZoneOffset()
-            );
-            return placeRepository.save(newPlace);
-        });
+        var place = placeService.getOrCreatePlace(
+                loc.getId(), loc.getName(), loc.getCountryCode(), loc.getZoneOffset(), null
+        );
 
         return measurementRepository.save(new Measurement(
                 place, response.getCalculationTime().toInstant(place.getZoneOffset()), response

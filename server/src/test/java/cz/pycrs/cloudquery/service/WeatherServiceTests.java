@@ -29,7 +29,7 @@ public class WeatherServiceTests {
     @Before
     public void setup() {
         System.out.println("Setting up WeatherServiceTests");
-        var place = placeRepository.save(new Place(69,"Test Place", "Test Country", ZoneOffset.UTC));
+        var place = placeRepository.save(new Place(69,"Test Place", "Test Country", ZoneOffset.UTC, null));
         System.out.println("Place created: " + place);
     }
 

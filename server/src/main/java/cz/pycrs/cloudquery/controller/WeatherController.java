@@ -1,23 +1,21 @@
 package cz.pycrs.cloudquery.controller;
 
-import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
 import com.github.prominence.openweathermap.api.model.Coordinate;
 import cz.pycrs.cloudquery.entity.Measurement;
 import cz.pycrs.cloudquery.service.WeatherService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/weather")
 @RequiredArgsConstructor
 public class WeatherController {
-    private final OpenWeatherMapClient owmClient;
     private final WeatherService weatherService;
 
-    @GetMapping("/fetch-current")
+    @PostMapping("/fetch-current")
     @Operation(
             summary = "Získat aktuální počasí podle města nebo souřadnic",
             description = "Zadejte buď název města (`city`), nebo kombinaci `lat` a `lon`.",
@@ -60,11 +58,11 @@ public class WeatherController {
                     )
             }
     )
-    public List<Measurement> currentWeather(
+    public Page<Measurement> currentWeather(
             @RequestParam int id,
-            @RequestParam(required = false) Integer limit
+            Pageable pageable
     ) {
-        return weatherService.getAllForPlace(id, limit);
+        return weatherService.getAllForPlace(id, pageable);
     }
 
     @GetMapping("/average")
@@ -84,5 +82,6 @@ public class WeatherController {
     public void averageWeather(
             @RequestParam int id,
             @RequestParam int days
-    ) {}
+    ) {
+    }
 }
