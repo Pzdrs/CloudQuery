@@ -4,6 +4,7 @@ import com.github.prominence.openweathermap.api.OpenWeatherMapClient;
 import com.github.prominence.openweathermap.api.enums.UnitSystem;
 import com.github.prominence.openweathermap.api.model.Coordinate;
 import com.github.prominence.openweathermap.api.request.weather.single.SingleResultCurrentWeatherRequestCustomizer;
+import cz.pycrs.cloudquery.dto.MeasurementAverages;
 import cz.pycrs.cloudquery.dto.MeasurementPatchRequest;
 import cz.pycrs.cloudquery.entity.Measurement;
 import cz.pycrs.cloudquery.repository.MeasurementRepository;
@@ -73,6 +74,11 @@ public class WeatherServiceImpl implements WeatherService {
         if (patch.humidity() != null) measurement.setHumidity(patch.humidity());
 
         return measurementRepository.save(measurement);
+    }
+
+    @Override
+    public MeasurementAverages getAveragesForPlace(int id, int days) {
+        return measurementRepository.findAveragesByPlace(placeService.getPlace(id));
     }
 
 

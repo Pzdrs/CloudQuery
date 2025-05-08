@@ -1,6 +1,7 @@
 package cz.pycrs.cloudquery.service;
 
 import com.github.prominence.openweathermap.api.model.Coordinate;
+import cz.pycrs.cloudquery.dto.MeasurementAverages;
 import cz.pycrs.cloudquery.dto.MeasurementPatchRequest;
 import cz.pycrs.cloudquery.entity.Measurement;
 import org.springframework.data.domain.Page;
@@ -63,4 +64,13 @@ public interface WeatherService {
      * @return updated measurement
      */
     Measurement updateMeasurement(int id, MeasurementPatchRequest patch);
+
+    /**
+     * Get the average measurements for the given place ID
+     *
+     * @param id   place ID to get the averages for
+     * @param days number of days to get the averages for
+     * @return average measurements for the given place ID
+     */
+    MeasurementAverages getAveragesForPlace(int id, int days);
 }

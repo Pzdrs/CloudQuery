@@ -1,6 +1,7 @@
 package cz.pycrs.cloudquery.controller;
 
 import com.github.prominence.openweathermap.api.model.Coordinate;
+import cz.pycrs.cloudquery.dto.MeasurementAverages;
 import cz.pycrs.cloudquery.entity.Measurement;
 import cz.pycrs.cloudquery.service.WeatherService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -79,9 +80,10 @@ public class WeatherController {
                     )
             }
     )
-    public void averageWeather(
+    public MeasurementAverages averageWeather(
             @RequestParam int id,
             @RequestParam int days
     ) {
+        return weatherService.getAveragesForPlace(id, days);
     }
 }
