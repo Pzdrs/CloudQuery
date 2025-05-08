@@ -39,14 +39,6 @@ erDiagram
 - In the code, lombok's `@Slf4j` is used to create the logger instances
 - [Logback](https://logback.qos.ch/) is then used for logging
 
-## Tests
-
-Persistent(repositories) and service layers are tested using JUnit 5 and Mockito and can be run using the Maven `test` target
-
-```shell
-mvn test
-```
-
 ### Logback configuration
 
 The configuration file is located in `src/main/resources/logback-spring.xml`
@@ -63,7 +55,14 @@ The configuration file is located in `src/main/resources/logback-spring.xml`
     <!-- It seemed appropriate to log API calls from the OWM SDK I'm using -->
     <logger name="com.github.prominence" level="DEBUG"/>
 </configuration>
+```
 
+## Tests
+
+Persistent(repositories) and service layers are tested using JUnit 5 and Mockito and can be run using the Maven `test` target
+
+```shell
+mvn test
 ```
 
 ## Weather API
@@ -71,3 +70,7 @@ The configuration file is located in `src/main/resources/logback-spring.xml`
 - The **OpenWeatherMap API** is used to fetch the weather data
 - A [3rd party library](https://github.com/Prominence/openweathermap-java-api) is used to interact with the API
 - The application expects the API key to be set in the environment variable `OPENWEATHERMAP_APIKEY`
+
+## OpenAPI Swagger
+
+- The application exposes a Swagger UI at `/swagger-ui.html` (for localhost - `http://localhost:8080/swagger-ui.html`)
